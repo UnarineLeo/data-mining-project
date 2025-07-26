@@ -1,7 +1,7 @@
-DSFSI Project Starter
+Translation Improver
 ==============================
 
-_This documentation is aimed to help provide information that explains what a project is about._
+_This documentation is aimed to help provide information that explains what Translation Improver is about._
 
 Last updated: August 2023
 
