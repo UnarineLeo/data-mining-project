@@ -1,4 +1,4 @@
-Translation Improver
+Data Mining Project
 ==============================
 
 _This documentation is aimed to help provide information that explains what Translation Improver is about._
