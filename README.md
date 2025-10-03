@@ -1,9 +1,9 @@
-Data Mining Project
+Data Mining Project - Group 19
 ==============================
 
-_This documentation is aimed to help provide information that explains what Translation Improver is about._
+_This documentation is aimed to help provide information that explains what the project is about._
 
-Last updated: August 2023
+Last updated: November 2025
 
 ## Table of contents 
 
@@ -110,7 +110,7 @@ python src/main.py
 ## Authors 
 -----------
 
-* Written by : 
+* Written by : Maishah Dlamini, Khwezi Ntsaluba, Yashvitha Kanaparthy, Unarine Netshifhefhe
 * Contact details : 
 
 ### Contributions  
