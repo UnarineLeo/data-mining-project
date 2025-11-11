@@ -16,7 +16,7 @@ Last updated: November 2025
 ## Project Description 
 -----------
 
-A short description of the project.
+This project explores association rule mining using Apriori and FP-Growth algorithms. It introduces an optimized Weighted Apriori method for weighted multidimensional data, improving efficiency by reducing repeated database scans. The algorithm is evaluated through rule analysis on the business categories found on Yelp dataset.
 
 ## Project Organization
 ------------
@@ -27,12 +27,12 @@ A short description of the project.
     ├── data
     │   ├── external       <- Data from third party sources.
     │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── processed      <- The final, processed data sets of Yelp data.
+    │   └── raw            <- The original, Yelp dataset as obtained from source.
     │
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models             <- Apriori, FP-Growth, and Weighted Algorithms.
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
@@ -69,7 +69,7 @@ A short description of the project.
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+<p><small>Project based on the <a target="_blank" href="https://ieeexplore.ieee.org/document/7009124/">cAn improved algorithm for Mining Association Rule in relational database</a> research paper.</small></p>
 
 ## Getting Started
 -----------
@@ -81,20 +81,6 @@ Provide a summary of the list software and the version required to run the code.
 
 - Python 3.11.3 
 
-### Installation 
-
-Provide the instructions and code necessary to setup the required software environment for the code. An example of this is : 
-
-1. Run the setup.py to build the src python package
-2. Run the requirements.txt to install all the required libraries, modules, and packages.  
-
-```
-
-python setup.py install
-pip install -r requirements.txt 
-
-```
-
 ### Usage 
 
 Provide information and code on how to run the code and use the code. This includes instructions and examples of inputs and outputs. An example of this is : 
@@ -102,22 +88,19 @@ Provide information and code on how to run the code and use the code. This inclu
 1. To use the code , run the following line: 
 
 ```
+Create a Google Drive shortcut for the yelp dataset <a href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
 
-python src/main.py
+Then download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: src/models/association_rules_efficiency.ipynb
 
+Run the notebook on Google Colab or Jupyter Notebook.
 ```
 
 ## Authors 
 -----------
 
 * Written by : Maishah Dlamini, Khwezi Ntsaluba, Yashvitha Kanaparthy, Unarine Netshifhefhe
-* Contact details : 
-
-### Contributions  
-
-This is optional and provides information about which  and how each of the developers contributed. 
 
 ## More Information 
 ---------
 
-Provide any relevant informations about the project. 
+This project is part of the Data Mining course (COS781) at the University of Pretoria. The project is supervised by Prof. Vukosi Marivate, Dr. Abiodun Modupe and Mr. Willem van Heerden.
