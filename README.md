@@ -77,9 +77,7 @@ _This section provides the necessary information for a user to be able to run th
 
 ### Prerequisites 
 
-Provide a summary of the list software and the version required to run the code. An example of this is : 
-
-- Python 3.11.3 
+1. Have a Google Account, to access Google Drive and Google Colabs
 
 ### Usage 
 
@@ -96,6 +94,11 @@ To test the code, follow these steps:
 -----------
 
 * Written by : Maishah Dlamini, Khwezi Ntsaluba, Yashvitha Kanaparthy, Unarine Netshifhefhe
+
+## Link 
+-----------
+* Dataset: <a href="https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset">Kaggle Dataset</a>
+* Presentation Link: <a href="https://www.canva.com/design/DAG4OtN1I5I/iURjteA3UJ9OtngxnE5u5w/edit?utm_content=DAG4OtN1I5I&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva</a>
 
 ## More Information 
 ---------
