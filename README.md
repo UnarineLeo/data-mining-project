@@ -83,15 +83,13 @@ Provide a summary of the list software and the version required to run the code.
 
 ### Usage 
 
-Provide information and code on how to run the code and use the code. This includes instructions and examples of inputs and outputs. An example of this is : 
+To test the code, follow these steps:
 
-1. To use the code , run the following line: 
+1. Create a Google Drive shortcut for the yelp dataset <a href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
 
-Create a Google Drive shortcut for the yelp dataset <a href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
+2. Download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: ``src/models/association_rules_efficiency.ipynb``
 
-Then download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: src/models/association_rules_efficiency.ipynb
-
-Run the notebook on Google Colab or Jupyter Notebook.
+3. Run the notebook on Google Colab or Jupyter Notebook.
 
 
 ## Authors 
