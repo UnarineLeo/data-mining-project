@@ -83,7 +83,7 @@ _This section provides the necessary information for a user to be able to run th
 
 To test the code, follow these steps:
 
-1. Create a Google Drive shortcut for the yelp dataset <a href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
+1. Create a Google Drive shortcut for the yelp dataset <a target="_blank" href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
 
 2. Download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: ``src/models/association_rules_efficiency.ipynb``
 
@@ -95,10 +95,10 @@ To test the code, follow these steps:
 
 * Written by : Maishah Dlamini, Khwezi Ntsaluba, Yashvitha Kanaparthy, Unarine Netshifhefhe
 
-## Link 
+## Links 
 -----------
-* Dataset: <a href="https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset">Kaggle Dataset</a>
-* Presentation Link: <a href="https://www.canva.com/design/DAG4OtN1I5I/iURjteA3UJ9OtngxnE5u5w/edit?utm_content=DAG4OtN1I5I&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva</a>
+* Dataset: <a target="_blank" href="https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset">Kaggle Dataset</a>
+* Presentation Link: <a target="_blank" href="https://www.canva.com/design/DAG4OtN1I5I/iURjteA3UJ9OtngxnE5u5w/edit?utm_content=DAG4OtN1I5I&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva</a>
 
 ## More Information 
 ---------
