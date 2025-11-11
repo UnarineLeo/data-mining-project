@@ -69,7 +69,7 @@ This project explores association rule mining using Apriori and FP-Growth algori
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://ieeexplore.ieee.org/document/7009124/">cAn improved algorithm for Mining Association Rule in relational database</a> research paper.</small></p>
+<p><small>Project based on the <a target="_blank" href="https://ieeexplore.ieee.org/document/7009124/">An improved algorithm for Mining Association Rule in relational database</a> research paper.</small></p>
 
 ## Getting Started
 -----------
@@ -87,13 +87,12 @@ Provide information and code on how to run the code and use the code. This inclu
 
 1. To use the code , run the following line: 
 
-```
 Create a Google Drive shortcut for the yelp dataset <a href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
 
 Then download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: src/models/association_rules_efficiency.ipynb
 
 Run the notebook on Google Colab or Jupyter Notebook.
-```
+
 
 ## Authors 
 -----------
