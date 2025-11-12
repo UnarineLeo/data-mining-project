@@ -6,14 +6,44 @@ from dotenv import find_dotenv, load_dotenv
 
 
 @click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+@click.option('--num-samples', default=100000, help='Number of reviews to process')
+@click.option('--min-stars', default=3, help='Minimum star rating filter')
+def main(num_samples, min_stars):
+    """Process raw Yelp data into analysis-ready format.
+    
+    This script combines sampling and merging operations:
+    1. Filters reviews with >= min_stars rating
+    2. Merges business categories with reviews
+    3. Outputs a single processed dataset
+    
+    Usage:
+        python -m src.data.make_dataset
+        python -m src.data.make_dataset --num-samples 50000 --min-stars 4
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info('Processing Yelp review data...')
+    
+    # Import here to avoid circular dependencies
+    from prepare_review_data import prepare_review_dataset
+    
+    project_dir = Path(__file__).resolve().parents[2]
+    review_file = project_dir / 'data/raw/yelp_academic_dataset_review.json'
+    business_file = project_dir / 'data/raw/yelp_academic_dataset_business.json'
+    output_file = project_dir / 'data/processed/review_business_data.jsonl'
+    
+    logger.info(f'Input: {review_file.name}')
+    logger.info(f'Output: {output_file}')
+    logger.info(f'Parameters: num_samples={num_samples}, min_stars={min_stars}')
+    
+    prepare_review_dataset(
+        str(review_file), 
+        str(business_file), 
+        str(output_file),
+        num_samples=num_samples,
+        min_stars=min_stars
+    )
+    
+    logger.info('☑ Data processing complete')
 
 
 if __name__ == '__main__':
