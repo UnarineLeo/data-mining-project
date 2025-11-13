@@ -27,4 +27,4 @@ print("\nItemsets:")
 for itemset, support in sorted(result, key=lambda x: x[1], reverse=True):
     print(f"  {itemset}: {support}")
 
-print("\n✅ PyFPGrowth integration successful!")
+print("\n😎 PyFPGrowth integration successful!")

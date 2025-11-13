@@ -48,8 +48,8 @@ def plot_execution_time_comparison(comparison_df: pd.DataFrame, output_dir: Path
     plt.plot(comparison_df['min_support'], comparison_df['fpgrowth_time (s)'], 
              marker='s', label='FP-Growth', linewidth=2.5, markersize=8, 
              linestyle='--', alpha=0.8)
-    plt.plot(comparison_df['min_support'], comparison_df['weighted_time (s)'], 
-             marker='^', label='Weighted Apriori', linewidth=2.5, markersize=8, 
+    plt.plot(comparison_df['min_support'], comparison_df['improved_time (s)'], 
+             marker='^', label='Improved Apriori', linewidth=2.5, markersize=8, 
              linestyle='-.', alpha=0.8)
     
     plt.xlabel('Minimum Support', fontsize=12)
@@ -77,16 +77,16 @@ def plot_speedup_ratios(comparison_df: pd.DataFrame, output_dir: Path):
     x = range(len(comparison_df))
     width = 0.35
     
-    ax.bar([i - width/2 for i in x], comparison_df['apriori_vs_weighted'], 
-           width, label='Apriori vs Weighted', alpha=0.8)
-    ax.bar([i + width/2 for i in x], comparison_df['fpgrowth_vs_weighted'], 
-           width, label='FP-Growth vs Weighted', alpha=0.8)
+    ax.bar([i - width/2 for i in x], comparison_df['apriori_vs_improved'], 
+           width, label='Apriori vs Improved', alpha=0.8)
+    ax.bar([i + width/2 for i in x], comparison_df['fpgrowth_vs_improved'], 
+           width, label='FP-Growth vs Improved', alpha=0.8)
     
-    ax.axhline(y=1, color='r', linestyle='--', linewidth=2, label='Baseline (Weighted Apriori)')
+    ax.axhline(y=1, color='r', linestyle='--', linewidth=2, label='Baseline (Improved Apriori)')
     
     ax.set_xlabel('Minimum Support', fontsize=12)
     ax.set_ylabel('Speedup Ratio', fontsize=12)
-    ax.set_title('Speedup Ratios Relative to Weighted Apriori', fontsize=14, fontweight='bold')
+    ax.set_title('Speedup Ratios Relative to Improved Apriori', fontsize=14, fontweight='bold')
     ax.set_xticks(x)
     ax.set_xticklabels([f"{val:.2f}" for val in comparison_df['min_support']])
     ax.legend(fontsize=10)
@@ -115,8 +115,8 @@ def plot_itemsets_found(comparison_df: pd.DataFrame, output_dir: Path):
     plt.plot(comparison_df['min_support'], comparison_df['fpgrowth_itemsets'], 
              marker='s', label='FP-Growth', linewidth=2.5, markersize=8, 
              linestyle='--', alpha=0.8)
-    plt.plot(comparison_df['min_support'], comparison_df['weighted_itemsets'], 
-             marker='^', label='Weighted Apriori', linewidth=2.5, markersize=8, 
+    plt.plot(comparison_df['min_support'], comparison_df['improved_itemsets'], 
+             marker='^', label='Improved Apriori', linewidth=2.5, markersize=8, 
              linestyle='-.', alpha=0.8)
     
     plt.xlabel('Minimum Support', fontsize=12)
@@ -142,9 +142,9 @@ def plot_heatmap_comparison(comparison_df: pd.DataFrame, output_dir: Path):
     """
     # Prepare data for heatmap
     heatmap_data = comparison_df[['min_support', 'apriori_time (s)', 
-                                   'fpgrowth_time (s)', 'weighted_time (s)']].copy()
+                                   'fpgrowth_time (s)', 'improved_time (s)']].copy()
     heatmap_data = heatmap_data.set_index('min_support')
-    heatmap_data.columns = ['Apriori', 'FP-Growth', 'Weighted Apriori']
+    heatmap_data.columns = ['Apriori', 'FP-Growth', 'Improved Apriori']
     
     plt.figure(figsize=(10, 8))
     sns.heatmap(heatmap_data.T, annot=True, fmt='.4f', cmap='YlOrRd', 
@@ -173,8 +173,8 @@ def plot_itemset_size_distribution(results_dict: dict, output_dir: Path):
     minsup_value = results_dict['apriori']['minsup'][mid_idx]
     
     # Extract itemset size distributions for the selected minsup
-    algorithms = ['apriori', 'fpgrowth', 'weighted']
-    algorithm_labels = ['Apriori', 'FP-Growth', 'Weighted Apriori']
+    algorithms = ['apriori', 'fpgrowth', 'improved']
+    algorithm_labels = ['Apriori', 'FP-Growth', 'Improved Apriori']
     
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     fig.suptitle(f'Itemset Size Distribution (min_support = {minsup_value:.2f})', 
@@ -261,7 +261,7 @@ def generate_all_visualizations(results_dir: Path, output_dir: Path):
     plot_heatmap_comparison(comparison_df, output_dir)
     plot_itemset_size_distribution(results_dict, output_dir)
     
-    print(f"\n✅ All visualizations saved to: {output_dir}")
+    print(f"\n😎 All visualizations saved to: {output_dir}")
 
 
 def main():

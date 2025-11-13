@@ -133,16 +133,11 @@ class PyFPGrowthStrategy(MiningStrategy):
         return self._strategy.get_algorithm_name()
 
 
-class WeightedAprioriStrategy(MiningStrategy):
-    """Weighted Apriori algorithm with optimized database scans."""
-    
-    def __init__(self):
-        self.database = None
-        self.wminsup = None
-        self.num_transactions = 0
+class ImprovedAprioriStrategy(MiningStrategy):
+    """Improved Apriori (2-Phase) implementation using tidlist / vertical format."""
     
     def mine_frequent_itemsets(self, transactions_list: List[Set], min_support: float) -> Tuple[List[Tuple], float]:
-        """Mine frequent itemsets using Weighted Apriori.
+        """Mine frequent itemsets using Improved Apriori (2-phase tidlist).
         
         Args:
             transactions_list: List of transaction sets
@@ -151,117 +146,98 @@ class WeightedAprioriStrategy(MiningStrategy):
         Returns:
             Tuple of (frequent_itemsets list, execution_time)
         """
-        self.database = transactions_list
-        self.num_transactions = len(transactions_list)
-        self.wminsup = int(min_support * self.num_transactions)
-        
         start_time = time.time()
-        frequent_itemsets = self._locate_frequent_k_itemset()
-        execution_time = time.time() - start_time
         
-        # Convert to list format: [(itemset, support_count), ...]
-        result = []
-        for k, itemsets in frequent_itemsets.items():
-            for itemset, sup_trans in itemsets.items():
-                result.append((set(itemset), len(sup_trans)))
+        # Convert to list of sets
+        transactions = [set(tx) for tx in transactions_list]
+        n_transactions = len(transactions)
+        min_support_count = max(1, int(min_support * n_transactions))
         
-        return result, execution_time
-    
-    def get_algorithm_name(self) -> str:
-        return "Weighted Apriori"
-    
-    def _generate_c1(self) -> Dict[frozenset, Set[int]]:
-        """Generate candidate 1-itemsets."""
-        c1 = defaultdict(set)
-        for tid, transaction in enumerate(self.database):
-            for item in transaction:
-                c1[frozenset([item])].add(tid)
-        return c1
-    
-    def _locate_frequent_1_itemset(self, c1: Dict) -> Dict:
-        """Filter frequent 1-itemsets based on minimum support."""
-        l1 = {}
-        for itemset, sup_trans in c1.items():
-            count = len(sup_trans)
-            if count >= self.wminsup:
-                l1[itemset] = sup_trans
-        return l1
-    
-    def _apriori_gen(self, lk_prev: Dict) -> Dict:
-        """Generate candidate k-itemsets from frequent (k-1)-itemsets."""
-        ck = {}
-        itemsets = list(lk_prev.keys())
+        # Phase 1: Build tidlists (single DB scan)
+        transactions_map, item_tid = self._build_tidlists(transactions)
         
-        for i in range(len(itemsets)):
-            for j in range(i + 1, len(itemsets)):
-                g1 = sorted(itemsets[i])
-                g2 = sorted(itemsets[j])
-                
-                # Join step: merge if first k-2 items are identical
-                if g1[:-1] == g2[:-1] and g1[-1] < g2[-1]:
-                    c = frozenset(g1 + [g2[-1]])
-                    
-                    # Prune step: check if all subsets are frequent
-                    if self._has_infrequent_subset(c, lk_prev):
+        # Compute L1
+        L = []  # list of dicts: L[k-1] contains frequent k-itemsets
+        L1 = {}
+        for item, tids in item_tid.items():
+            sup_count = len(tids)
+            if sup_count >= min_support_count:
+                L1[frozenset([item])] = (tids, sup_count)
+        L.append(L1)
+        
+        # Result list
+        frequent_itemsets = []
+        # Store L1 in result
+        for itemset, (tids, sc) in L1.items():
+            frequent_itemsets.append((set(itemset), sc))
+        
+        # Generate higher-level itemsets
+        k = 2
+        while True:
+            prev_L = L[-1]
+            if len(prev_L) < 2:
+                break  # can't join to make larger sets
+            
+            # Candidate generation: join step
+            prev_itemsets = sorted(prev_L.keys(), key=lambda fs: tuple(sorted(fs)))
+            Ck = {}
+            
+            # Join pairs of previous (k-1)-itemsets
+            for i in range(len(prev_itemsets)):
+                for j in range(i+1, len(prev_itemsets)):
+                    a = prev_itemsets[i]
+                    b = prev_itemsets[j]
+                    # Attempt join
+                    union = a | b
+                    if len(union) != k:
                         continue
                     
-                    ck[c] = set()
-        
-        return ck
-    
-    def _has_infrequent_subset(self, candidate: frozenset, lk_prev: Dict) -> bool:
-        """Check if candidate has any infrequent subset."""
-        k = len(candidate)
-        for subset in combinations(candidate, k - 1):
-            if frozenset(subset) not in lk_prev:
-                return True
-        return False
-    
-    def _locate_frequent_k_itemset(self) -> Dict[int, Dict]:
-        """Main algorithm to find all frequent itemsets."""
-        # Generate frequent 1-itemsets
-        c1 = self._generate_c1()
-        l1 = self._locate_frequent_1_itemset(c1)
-        all_frequent = {1: l1}
-        
-        lk_prev = l1
-        k = 2
-        
-        # Iteratively generate frequent k-itemsets
-        while lk_prev:
-            ck = self._apriori_gen(lk_prev)
-            if not ck:
-                break
-            
-            # Calculate support using intersection of transaction sets
-            for c in ck:
-                c_sup_trans = None
-                for subset in combinations(c, k - 1):
-                    subset_frozen = frozenset(subset)
-                    s_sup_trans = lk_prev.get(subset_frozen, set())
+                    # Intersect tidlists of a and b
+                    tids_a = prev_L[a][0]
+                    tids_b = prev_L[b][0]
+                    inter_tids = tids_a & tids_b
+                    sup_count = len(inter_tids)
                     
-                    if c_sup_trans is None:
-                        c_sup_trans = s_sup_trans.copy()
-                    else:
-                        c_sup_trans = c_sup_trans.intersection(s_sup_trans)
-                
-                ck[c] = c_sup_trans if c_sup_trans else set()
+                    if sup_count >= min_support_count:
+                        Ck[frozenset(union)] = (inter_tids, sup_count)
             
-            # Filter by minimum support
-            lk = {}
-            for c, sup_trans in ck.items():
-                count = len(sup_trans)
-                if count >= self.wminsup:
-                    lk[c] = sup_trans
-            
-            if lk:
-                all_frequent[k] = lk
-                lk_prev = lk
-                k += 1
-            else:
+            if not Ck:
                 break
+            
+            # Add to L and to result
+            L.append(Ck)
+            for itemset, (tids, sc) in Ck.items():
+                frequent_itemsets.append((set(itemset), sc))
+            k += 1
         
-        return all_frequent
+        execution_time = time.time() - start_time
+        return frequent_itemsets, execution_time
+    
+    def _build_tidlists(self, transactions):
+        """
+        Phase 1: Single pass over transactions to build:
+          - transactions_map: {tid: set(items)}
+          - item_tid: {item: set(tids)}
+        """
+        transactions_map = {}
+        item_tid = defaultdict(set)
+        
+        for tid, tx in enumerate(transactions):
+            itemset = set(tx)
+            transactions_map[tid] = itemset
+            for item in itemset:
+                item_tid[item].add(tid)
+        
+        return transactions_map, item_tid
+    
+    def get_algorithm_name(self) -> str:
+        return "Improved Apriori"
+
+
+# Alias for backward compatibility
+class WeightedAprioriStrategy(ImprovedAprioriStrategy):
+    """Alias for ImprovedAprioriStrategy - kept for backward compatibility."""
+    pass
 
 
 class MiningContext:

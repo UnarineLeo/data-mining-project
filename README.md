@@ -16,7 +16,12 @@ Last updated: November 2025
 ## Project Description 
 -----------
 
-This project explores association rule mining using Apriori and FP-Growth algorithms. It introduces an optimized Weighted Apriori method for weighted multidimensional data, improving efficiency by reducing repeated database scans. The algorithm is evaluated through rule analysis on the business categories found on Yelp dataset.
+This project explores association rule mining using multiple algorithms on Yelp business category data. It compares three implementations:
+1. **Apriori** (mlxtend) - Classic frequent itemset mining
+2. **FP-Growth** (pyfpgrowth) - Optimized pattern growth using tidlists
+3. **Improved Apriori** - 2-phase tidlist implementation for enhanced efficiency
+
+The algorithms are evaluated through performance analysis on business categories from the Yelp dataset, measuring execution time, itemset discovery, and scalability across varying support thresholds.
 
 ## Project Organization
 ------------
@@ -73,7 +78,7 @@ This project explores association rule mining using Apriori and FP-Growth algori
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://ieeexplore.ieee.org/document/7009124/">An improved algorithm for Mining Association Rule in relational database</a> research paper.</small></p>
+<p><small>Project based on the <a target="_blank" href="https://ieeexplore.ieee.org/document/7009124/">An improved algorithm for Mining Association Rules</a> and efficient FP-Growth implementations.</small></p>
 
 ## Getting Started
 -----------
@@ -116,6 +121,10 @@ Download the Yelp dataset and place these files in `data/raw/`:
 Dataset sources:
 - <a target="_blank" href="https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset">Kaggle Dataset</a>
 - <a target="_blank" href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">Google Drive</a>
+
+### Running the Pipeline
+
+#### 1. Prepare Review Data
    ```bash
    python -m src.data.make_dataset
    ```
@@ -153,8 +162,25 @@ python -m src.visualization.plot_comparison
 **Output:** Charts in `reports/figures/`
 - Execution time comparison
 - Speedup ratios
-- Itemsets comparison
+- Itemsets found comparison
+- Itemset size distribution
 - Performance heatmap
+
+### Algorithms Compared
+
+1. **Apriori (mlxtend)**: Classic bottom-up approach using candidate generation and pruning
+2. **FP-Growth (pyfpgrowth)**: Pattern growth method using FP-tree, optimized for sparse datasets
+3. **Improved Apriori**: 2-phase tidlist implementation that builds vertical transaction lists for efficient support counting
+
+### Performance Insights
+
+**FP-Growth vs Apriori**: FP-Growth (pyfpgrowth) is typically 14-26x faster on sparse Yelp data due to:
+- No DataFrame overhead
+- Direct transaction list processing
+- Optimized FP-tree construction
+- Better memory efficiency
+
+See `FPGROWTH_PERFORMANCE.md` for detailed analysis.
 
 ### Quick Start (All Steps)
 

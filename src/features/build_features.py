@@ -144,12 +144,12 @@ def build_transaction_features(input_file, output_dir, filter_restaurant=True):
     # Save one-hot encoded data
     encoded_path = os.path.join(output_dir, 'transactions_encoded.csv')
     df_encoded.to_csv(encoded_path, index=False)
-    print(f"\n✅ Saved encoded transactions to: {encoded_path}")
+    print(f"\n😎 Saved encoded transactions to: {encoded_path}")
     
     # Save raw transactions for weighted apriori
     transactions_path = os.path.join(output_dir, 'user_transactions.pkl')
     user_transactions.to_pickle(transactions_path)
-    print(f"✅ Saved user transactions to: {transactions_path}")
+    print(f"😎 Saved user transactions to: {transactions_path}")
     
     return df_encoded, transactions_list
 

@@ -79,7 +79,7 @@ def prepare_review_dataset(review_file, business_file, output_file, num_samples=
             except (json.JSONDecodeError, KeyError):
                 continue
     
-    print(f"\n✅ Processing complete!")
+    print(f"\n😎 Processing complete!")
     print(f"   Processed: {processed} reviews")
     print(f"   Skipped (low stars): {skipped_stars}")
     print(f"   Skipped (no category): {skipped_no_category}")

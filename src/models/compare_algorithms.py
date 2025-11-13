@@ -14,7 +14,7 @@ from typing import Dict, List
 from src.models.mining_strategies import (
     AprioriStrategy,
     FPGrowthStrategy,
-    WeightedAprioriStrategy,
+    ImprovedAprioriStrategy,
     MiningContext
 )
 
@@ -63,7 +63,7 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
     results = {
         'apriori': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []},
         'fpgrowth': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []},
-        'weighted': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []}
+        'improved': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []}
     }
     
     print(f"\n{'='*80}")
@@ -111,9 +111,9 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
         
         print(f"  minsup={minsup:.3f}: {exec_time:.4f}s, {itemsets_count} itemsets")
     
-    # Run Weighted Apriori
-    print("\nRunning Weighted Apriori...")
-    context.strategy = WeightedAprioriStrategy()
+    # Run Improved Apriori
+    print("\nRunning Improved Apriori...")
+    context.strategy = ImprovedAprioriStrategy()
     for minsup in min_support_values:
         frequent_itemsets, exec_time = context.execute_mining(transactions_list, minsup)
         itemsets_count = len(frequent_itemsets)
@@ -124,10 +124,10 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
             size = len(itemset)
             itemset_sizes[size] = itemset_sizes.get(size, 0) + 1
         
-        results['weighted']['minsup'].append(minsup)
-        results['weighted']['time'].append(exec_time)
-        results['weighted']['itemsets_count'].append(itemsets_count)
-        results['weighted']['itemset_sizes'].append(itemset_sizes)
+        results['improved']['minsup'].append(minsup)
+        results['improved']['time'].append(exec_time)
+        results['improved']['itemsets_count'].append(itemsets_count)
+        results['improved']['itemset_sizes'].append(itemset_sizes)
         
         print(f"  minsup={minsup:.3f}: {exec_time:.4f}s, {itemsets_count} itemsets")
     
@@ -151,18 +151,18 @@ def print_results_summary(results: Dict, num_transactions: int, num_categories: 
         'min_support': results['apriori']['minsup'],
         'apriori_time (s)': results['apriori']['time'],
         'fpgrowth_time (s)': results['fpgrowth']['time'],
-        'weighted_time (s)': results['weighted']['time'],
+        'improved_time (s)': results['improved']['time'],
         'apriori_itemsets': results['apriori']['itemsets_count'],
         'fpgrowth_itemsets': results['fpgrowth']['itemsets_count'],
-        'weighted_itemsets': results['weighted']['itemsets_count'],
+        'improved_itemsets': results['improved']['itemsets_count'],
     })
     
     # Calculate speedup ratios
-    comparison_df['apriori_vs_weighted'] = (
-        comparison_df['apriori_time (s)'] / comparison_df['weighted_time (s)']
+    comparison_df['apriori_vs_improved'] = (
+        comparison_df['apriori_time (s)'] / comparison_df['improved_time (s)']
     )
-    comparison_df['fpgrowth_vs_weighted'] = (
-        comparison_df['fpgrowth_time (s)'] / comparison_df['weighted_time (s)']
+    comparison_df['fpgrowth_vs_improved'] = (
+        comparison_df['fpgrowth_time (s)'] / comparison_df['improved_time (s)']
     )
     
     print("\nComparison Table:")
@@ -178,11 +178,11 @@ def print_results_summary(results: Dict, num_transactions: int, num_categories: 
     print(f"\nAverage execution times:")
     print(f"  Apriori:          {comparison_df['apriori_time (s)'].mean():.4f}s")
     print(f"  FP-Growth:        {comparison_df['fpgrowth_time (s)'].mean():.4f}s")
-    print(f"  Weighted Apriori: {comparison_df['weighted_time (s)'].mean():.4f}s")
+    print(f"  Improved Apriori: {comparison_df['improved_time (s)'].mean():.4f}s")
     
-    print(f"\nAverage speedup ratios (vs Weighted Apriori):")
-    avg_apriori_speedup = comparison_df['apriori_vs_weighted'].mean()
-    avg_fpgrowth_speedup = comparison_df['fpgrowth_vs_weighted'].mean()
+    print(f"\nAverage speedup ratios (vs Improved Apriori):")
+    avg_apriori_speedup = comparison_df['apriori_vs_improved'].mean()
+    avg_fpgrowth_speedup = comparison_df['fpgrowth_vs_improved'].mean()
     
     print(f"  Apriori:   {avg_apriori_speedup:.2f}x")
     print(f"  FP-Growth: {avg_fpgrowth_speedup:.2f}x")
@@ -203,13 +203,13 @@ def save_results(results: Dict, comparison_df: pd.DataFrame, output_dir: Path):
     # Save comparison table
     comparison_path = output_dir / 'algorithm_comparison.csv'
     comparison_df.to_csv(comparison_path, index=False)
-    print(f"\n✅ Saved comparison table to: {comparison_path}")
+    print(f"\n😎 Saved comparison table to: {comparison_path}")
     
-    # Save raw results as JSON
+    # Save raw results to JSON
     results_path = output_dir / 'mining_results.json'
     with open(results_path, 'w') as f:
         json.dump(results, f, indent=2)
-    print(f"✅ Saved raw results to: {results_path}")
+    print(f"😎 Saved raw results to: {results_path}")
 
 
 def main():

@@ -41,8 +41,8 @@ def load_transaction_data(data_dir: Path):
     user_transactions = pd.read_pickle(transactions_path)
     transactions_list = user_transactions['transaction_items'].tolist()
     
-    print(f"  ✓ Loaded {len(transactions_list)} transactions")
-    print(f"  ✓ Unique categories: {df_encoded.shape[1]}")
+    print(f"  😎 Loaded {len(transactions_list)} transactions")
+    print(f"  😎 Unique categories: {df_encoded.shape[1]}")
     
     return df_encoded, transactions_list
 
@@ -182,13 +182,13 @@ def save_results(results: Dict, comparison_df: pd.DataFrame, output_dir: Path):
     # Save comparison table
     comparison_path = output_dir / 'algorithm_comparison.csv'
     comparison_df.to_csv(comparison_path, index=False)
-    print(f"\n✅ Saved comparison table to: {comparison_path}")
+    print(f"\n😎 Saved comparison table to: {comparison_path}")
     
-    # Save raw results as JSON
-    results_path = output_dir / 'mining_results.json'
+    # Save raw results to JSON
+    results_path = models_dir / 'mining_results.json'
     with open(results_path, 'w') as f:
         json.dump(results, f, indent=2)
-    print(f"✅ Saved raw results to: {results_path}")
+    print(f"😎 Saved raw results to: {results_path}")
 
 
 def main():
