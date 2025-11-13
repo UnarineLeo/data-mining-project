@@ -57,7 +57,7 @@ def plot_execution_time_comparison(comparison_df: pd.DataFrame, output_dir: Path
     
     output_path = output_dir / 'execution_time_comparison.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"  ☑ Saved: {output_path}")
+    print(f"  ✓ Saved: {output_path}")
     plt.close()
 
 
@@ -91,7 +91,7 @@ def plot_speedup_ratios(comparison_df: pd.DataFrame, output_dir: Path):
     
     output_path = output_dir / 'speedup_ratios.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"  ☑ Saved: {output_path}")
+    print(f"  ✓ Saved: {output_path}")
     plt.close()
 
 
@@ -121,7 +121,7 @@ def plot_itemsets_found(comparison_df: pd.DataFrame, output_dir: Path):
     
     output_path = output_dir / 'itemsets_comparison.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"  ☑ Saved: {output_path}")
+    print(f"  ✓ Saved: {output_path}")
     plt.close()
 
 
@@ -148,7 +148,7 @@ def plot_heatmap_comparison(comparison_df: pd.DataFrame, output_dir: Path):
     
     output_path = output_dir / 'execution_time_heatmap.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"  ☑ Saved: {output_path}")
+    print(f"  ✓ Saved: {output_path}")
     plt.close()
 
 

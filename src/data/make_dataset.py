@@ -24,7 +24,7 @@ def main(num_samples, min_stars):
     logger.info('Processing Yelp review data...')
     
     # Import here to avoid circular dependencies
-    from prepare_review_data import prepare_review_dataset
+    from src.data.prepare_review_data import prepare_review_dataset
     
     project_dir = Path(__file__).resolve().parents[2]
     review_file = project_dir / 'data/raw/yelp_academic_dataset_review.json'

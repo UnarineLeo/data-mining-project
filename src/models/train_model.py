@@ -41,8 +41,8 @@ def load_transaction_data(data_dir: Path):
     user_transactions = pd.read_pickle(transactions_path)
     transactions_list = user_transactions['transaction_items'].tolist()
     
-    print(f"  ☑ Loaded {len(transactions_list)} transactions")
-    print(f"  ☑ Unique categories: {df_encoded.shape[1]}")
+    print(f"  ✓ Loaded {len(transactions_list)} transactions")
+    print(f"  ✓ Unique categories: {df_encoded.shape[1]}")
     
     return df_encoded, transactions_list
 
