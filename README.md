@@ -32,7 +32,11 @@ This project explores association rule mining using Apriori and FP-Growth algori
     │
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Apriori, FP-Growth, and Weighted Algorithms.
+    ├── models             <- Trained models and algorithm outputs
+    │   ├── mining_strategies.py      <- Strategy pattern for mining algorithms
+    │   ├── compare_algorithms.py     <- Main comparison script
+    │   ├── algorithm_comparison.csv  <- Generated comparison results
+    │   └── mining_results.json       <- Generated raw results
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
@@ -48,21 +52,21 @@ This project explores association rule mining using Apriori and FP-Growth algori
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── data           <- Scripts to process raw data
+    │   │   ├── make_dataset.py          <- Main data processing pipeline
+    │   │   └── prepare_review_data.py   <- Review-business merging logic
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   │   └── build_features.py        <- Transaction feature engineering
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   ├── models         <- Scripts to train models and compare algorithms
+    │   │   ├── mining_strategies.py     <- Strategy pattern implementation
+    │   │   └── compare_algorithms.py    <- Algorithm comparison runner
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── visualization  <- Scripts to create exploratory and results visualizations
+    │       └── plot_comparison.py       <- Generate comparison charts
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
@@ -77,20 +81,41 @@ _This section provides the necessary information for a user to be able to run th
 
 ### Prerequisites 
 
-1. Have a Google Account, to access Google Drive and Google Colabs
-2. Python 3.x installed
+1. Python 3.8 or higher
+2. Git (for cloning the repository)
 3. Required Python packages (see `requirements.txt`)
 
-### Data Processing Pipeline
+### Installation
 
-To prepare the Yelp dataset for analysis:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/UnarineLeo/data-mining-project.git
+   cd data-mining-project
+   ```
 
-1. **Download raw data**: Place the following files in `data/raw/`:
-   - `yelp_academic_dataset_review.json`
-   - `yelp_academic_dataset_business.json`
-   - `user_category_transactions.pkl` (if needed)
+2. **Create a virtual environment** (recommended):
+   ```bash
+   python -m venv venv
+   # Windows
+   venv\Scripts\activate
+   # Mac/Linux
+   source venv/bin/activate
+   ```
 
-2. **Process review data** (single command):
+3. **Install dependencies**:
+   ```bash
+   pip install -e .
+   ```
+
+### Data Setup
+
+Download the Yelp dataset and place these files in `data/raw/`:
+- `yelp_academic_dataset_review.json`
+- `yelp_academic_dataset_business.json`
+
+Dataset sources:
+- <a target="_blank" href="https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset">Kaggle Dataset</a>
+- <a target="_blank" href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">Google Drive</a>
    ```bash
    python -m src.data.make_dataset
    ```
@@ -99,23 +124,60 @@ To prepare the Yelp dataset for analysis:
    ```bash
    python -m src.data.make_dataset --num-samples 50000 --min-stars 4
    ```
-   
-   This combines filtering, sampling, and merging operations into one step, producing `data/processed/review_business_data.jsonl`
 
-3. **Optional**: Convert pickle to CSV (if using transaction data):
-   ```bash
-   python src/data/pkl_to_csv.py
-   ```
+**Output:** `data/processed/review_business_data.jsonl`
 
-### Usage 
+#### 2. Build Transaction Features
+```bash
+python -m src.features.build_features
+```
 
-To test the code, follow these steps:
+**Output:** 
+- `data/processed/transactions_encoded.csv` - One-hot encoded transactions
+- `data/processed/user_transactions.pkl` - Raw transaction sets
 
-1. Create a Google Drive shortcut for the yelp dataset <a target="_blank" href="https://drive.google.com/drive/folders/12MHKndM9nL8XaauUWqcrkUIpdfV4GBS7?usp=sharing">here</a>.
+#### 3. Compare Mining Algorithms
+```bash
+python -m src.models.compare_algorithms
+```
 
-2. Download the following python notebook to generate the frequent itemsets and association rules using the Apriori, FP-Growth and Weighted Apriori algorithms. The notebook is located at: ``src/models/association_rules_efficiency.ipynb``
+**Output:**
+- `models/algorithm_comparison.csv` - Performance comparison table
+- `models/mining_results.json` - Detailed results
 
-3. Run the notebook on Google Colab or Jupyter Notebook.
+#### 4. Generate Visualizations
+```bash
+python -m src.visualization.plot_comparison
+```
+
+**Output:** Charts in `reports/figures/`
+- Execution time comparison
+- Speedup ratios
+- Itemsets comparison
+- Performance heatmap
+
+### Quick Start (All Steps)
+
+```bash
+python -m src.data.make_dataset && \
+python -m src.features.build_features && \
+python -m src.models.compare_algorithms && \
+python -m src.visualization.plot_comparison
+```
+
+### Configuration
+
+Adjust parameters in the scripts:
+
+**Data Processing** (`make_dataset.py`):
+- `--num-samples`: Number of reviews to process (default: 100,000)
+- `--min-stars`: Minimum star rating filter (default: 3)
+
+**Algorithm Comparison** (`compare_algorithms.py` line 167):
+- Modify `min_support_values` list to test different thresholds
+
+**Feature Building** (`build_features.py` line 141):
+- Set `filter_restaurant=False` to include all business categories
 
 
 ## Authors 
