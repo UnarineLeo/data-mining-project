@@ -88,7 +88,7 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
     print("\nRunning FP-Growth...")
     context.strategy = FPGrowthStrategy()
     for minsup in min_support_values:
-        frequent_itemsets, exec_time = context.execute_mining(df_encoded, minsup)
+        frequent_itemsets, exec_time = context.execute_mining(transactions_list, minsup)
         itemsets_count = len(frequent_itemsets)
         
         results['fpgrowth']['minsup'].append(minsup)

@@ -61,7 +61,42 @@ class AprioriStrategy(MiningStrategy):
 
 
 class FPGrowthStrategy(MiningStrategy):
-    """FP-Growth algorithm using mlxtend."""
+    """FP-Growth algorithm using pyfpgrowth library."""
+    
+    def mine_frequent_itemsets(self, transactions_list: List[Set], min_support: float) -> Tuple[List[Tuple], float]:
+        """Mine frequent itemsets using FP-Growth algorithm.
+        
+        Args:
+            transactions_list: List of transaction sets
+            min_support: Minimum support threshold (0-1)
+            
+        Returns:
+            Tuple of (frequent_itemsets list, execution_time)
+        """
+        try:
+            import pyfpgrowth
+        except ImportError:
+            raise ImportError("pyfpgrowth is not installed. Install with: pip install pyfpgrowth")
+        
+        # Convert sets to lists for pyfpgrowth
+        transactions_as_lists = [list(t) for t in transactions_list]
+        min_support_count = int(min_support * len(transactions_list))
+        
+        start_time = time.time()
+        patterns = pyfpgrowth.find_frequent_patterns(transactions_as_lists, min_support_count)
+        execution_time = time.time() - start_time
+        
+        # Convert to standard format: [(itemset, support_count), ...]
+        result = [(set(itemset), support) for itemset, support in patterns.items()]
+        
+        return result, execution_time
+    
+    def get_algorithm_name(self) -> str:
+        return "FP-Growth"
+
+
+class FPGrowthMLXtendStrategy(MiningStrategy):
+    """FP-Growth algorithm using mlxtend (slower, kept for comparison)."""
     
     def mine_frequent_itemsets(self, df_encoded: pd.DataFrame, min_support: float) -> Tuple[pd.DataFrame, float]:
         """Mine frequent itemsets using FP-Growth algorithm.
@@ -82,7 +117,20 @@ class FPGrowthStrategy(MiningStrategy):
         return frequent_itemsets, execution_time
     
     def get_algorithm_name(self) -> str:
-        return "FP-Growth"
+        return "FP-Growth (mlxtend)"
+
+
+class PyFPGrowthStrategy(MiningStrategy):
+    """Alias for FPGrowthStrategy - kept for backwards compatibility."""
+    
+    def __init__(self):
+        self._strategy = FPGrowthStrategy()
+    
+    def mine_frequent_itemsets(self, transactions_list: List[Set], min_support: float) -> Tuple[List[Tuple], float]:
+        return self._strategy.mine_frequent_itemsets(transactions_list, min_support)
+    
+    def get_algorithm_name(self) -> str:
+        return self._strategy.get_algorithm_name()
 
 
 class WeightedAprioriStrategy(MiningStrategy):
