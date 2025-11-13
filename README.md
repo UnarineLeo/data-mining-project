@@ -78,6 +78,34 @@ _This section provides the necessary information for a user to be able to run th
 ### Prerequisites 
 
 1. Have a Google Account, to access Google Drive and Google Colabs
+2. Python 3.x installed
+3. Required Python packages (see `requirements.txt`)
+
+### Data Processing Pipeline
+
+To prepare the Yelp dataset for analysis:
+
+1. **Download raw data**: Place the following files in `data/raw/`:
+   - `yelp_academic_dataset_review.json`
+   - `yelp_academic_dataset_business.json`
+   - `user_category_transactions.pkl` (if needed)
+
+2. **Process review data** (single command):
+   ```bash
+   python -m src.data.make_dataset
+   ```
+   
+   Or with custom parameters:
+   ```bash
+   python -m src.data.make_dataset --num-samples 50000 --min-stars 4
+   ```
+   
+   This combines filtering, sampling, and merging operations into one step, producing `data/processed/review_business_data.jsonl`
+
+3. **Optional**: Convert pickle to CSV (if using transaction data):
+   ```bash
+   python src/data/pkl_to_csv.py
+   ```
 
 ### Usage 
 
