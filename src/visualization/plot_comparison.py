@@ -41,17 +41,21 @@ def plot_execution_time_comparison(comparison_df: pd.DataFrame, output_dir: Path
     """
     plt.figure(figsize=(12, 6))
     
+    # Use different line styles and markers to distinguish overlapping lines
     plt.plot(comparison_df['min_support'], comparison_df['apriori_time (s)'], 
-             marker='o', label='Apriori', linewidth=2)
+             marker='o', label='Apriori', linewidth=2.5, markersize=8, 
+             linestyle='-', alpha=0.8)
     plt.plot(comparison_df['min_support'], comparison_df['fpgrowth_time (s)'], 
-             marker='s', label='FP-Growth', linewidth=2)
+             marker='s', label='FP-Growth', linewidth=2.5, markersize=8, 
+             linestyle='--', alpha=0.8)
     plt.plot(comparison_df['min_support'], comparison_df['weighted_time (s)'], 
-             marker='^', label='Weighted Apriori', linewidth=2)
+             marker='^', label='Weighted Apriori', linewidth=2.5, markersize=8, 
+             linestyle='-.', alpha=0.8)
     
     plt.xlabel('Minimum Support', fontsize=12)
     plt.ylabel('Execution Time (seconds)', fontsize=12)
     plt.title('Algorithm Execution Time Comparison', fontsize=14, fontweight='bold')
-    plt.legend(fontsize=10)
+    plt.legend(fontsize=10, loc='best')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
@@ -104,17 +108,21 @@ def plot_itemsets_found(comparison_df: pd.DataFrame, output_dir: Path):
     """
     plt.figure(figsize=(12, 6))
     
+    # Use different line styles and markers to distinguish overlapping lines
     plt.plot(comparison_df['min_support'], comparison_df['apriori_itemsets'], 
-             marker='o', label='Apriori', linewidth=2)
+             marker='o', label='Apriori', linewidth=2.5, markersize=8, 
+             linestyle='-', alpha=0.8)
     plt.plot(comparison_df['min_support'], comparison_df['fpgrowth_itemsets'], 
-             marker='s', label='FP-Growth', linewidth=2)
+             marker='s', label='FP-Growth', linewidth=2.5, markersize=8, 
+             linestyle='--', alpha=0.8)
     plt.plot(comparison_df['min_support'], comparison_df['weighted_itemsets'], 
-             marker='^', label='Weighted Apriori', linewidth=2)
+             marker='^', label='Weighted Apriori', linewidth=2.5, markersize=8, 
+             linestyle='-.', alpha=0.8)
     
     plt.xlabel('Minimum Support', fontsize=12)
     plt.ylabel('Number of Frequent Itemsets', fontsize=12)
     plt.title('Frequent Itemsets Found by Algorithm', fontsize=14, fontweight='bold')
-    plt.legend(fontsize=10)
+    plt.legend(fontsize=10, loc='best')
     plt.grid(True, alpha=0.3)
     plt.yscale('log')  # Log scale since itemsets can vary greatly
     plt.tight_layout()
@@ -152,6 +160,85 @@ def plot_heatmap_comparison(comparison_df: pd.DataFrame, output_dir: Path):
     plt.close()
 
 
+def plot_itemset_size_distribution(results_dict: dict, output_dir: Path):
+    """Plot distribution of itemset sizes for each algorithm.
+    
+    Args:
+        results_dict: Dictionary with mining results including itemset_sizes
+        output_dir: Directory to save plots
+    """
+    # Select a representative minimum support value (middle value)
+    num_minsup = len(results_dict['apriori']['minsup'])
+    mid_idx = num_minsup // 2
+    minsup_value = results_dict['apriori']['minsup'][mid_idx]
+    
+    # Extract itemset size distributions for the selected minsup
+    algorithms = ['apriori', 'fpgrowth', 'weighted']
+    algorithm_labels = ['Apriori', 'FP-Growth', 'Weighted Apriori']
+    
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    fig.suptitle(f'Itemset Size Distribution (min_support = {minsup_value:.2f})', 
+                 fontsize=14, fontweight='bold')
+    
+    for idx, (algo, label) in enumerate(zip(algorithms, algorithm_labels)):
+        size_dist = results_dict[algo]['itemset_sizes'][mid_idx]
+        
+        if size_dist:
+            # Convert keys to integers and sort
+            sizes = sorted([int(k) for k in size_dist.keys()])
+            counts = [size_dist[str(s)] for s in sizes]
+            
+            axes[idx].bar(sizes, counts, alpha=0.7, edgecolor='black')
+            axes[idx].set_xlabel('Itemset Size', fontsize=11)
+            axes[idx].set_ylabel('Count', fontsize=11)
+            axes[idx].set_title(label, fontsize=12, fontweight='bold')
+            axes[idx].grid(True, alpha=0.3, axis='y')
+            axes[idx].set_xticks(sizes)
+        else:
+            axes[idx].text(0.5, 0.5, 'No data', ha='center', va='center', 
+                          transform=axes[idx].transAxes, fontsize=12)
+            axes[idx].set_title(label, fontsize=12, fontweight='bold')
+    
+    plt.tight_layout()
+    
+    output_path = output_dir / 'itemset_size_distribution.png'
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"  ☑ Saved: {output_path}")
+    plt.close()
+    
+    # Also create a combined comparison plot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x_offset = 0
+    bar_width = 0.25
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
+    
+    for idx, (algo, label, color) in enumerate(zip(algorithms, algorithm_labels, colors)):
+        size_dist = results_dict[algo]['itemset_sizes'][mid_idx]
+        
+        if size_dist:
+            # Convert keys to integers and sort
+            sizes = sorted([int(k) for k in size_dist.keys()])
+            counts = [size_dist[str(s)] for s in sizes]
+            x_positions = [s + idx * bar_width for s in sizes]
+            
+            ax.bar(x_positions, counts, bar_width, label=label, 
+                   alpha=0.7, edgecolor='black', color=color)
+    
+    ax.set_xlabel('Itemset Size', fontsize=12)
+    ax.set_ylabel('Count', fontsize=12)
+    ax.set_title(f'Itemset Size Distribution Comparison (min_support = {minsup_value:.2f})', 
+                 fontsize=14, fontweight='bold')
+    ax.legend(fontsize=10)
+    ax.grid(True, alpha=0.3, axis='y')
+    plt.tight_layout()
+    
+    output_path = output_dir / 'itemset_size_comparison.png'
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"  ☑ Saved: {output_path}")
+    plt.close()
+
+
 def generate_all_visualizations(results_dir: Path, output_dir: Path):
     """Generate all visualization plots.
     
@@ -172,6 +259,7 @@ def generate_all_visualizations(results_dir: Path, output_dir: Path):
     plot_speedup_ratios(comparison_df, output_dir)
     plot_itemsets_found(comparison_df, output_dir)
     plot_heatmap_comparison(comparison_df, output_dir)
+    plot_itemset_size_distribution(results_dict, output_dir)
     
     print(f"\n✅ All visualizations saved to: {output_dir}")
 

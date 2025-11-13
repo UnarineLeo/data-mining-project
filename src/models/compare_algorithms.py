@@ -61,9 +61,9 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
         Dictionary containing results for all algorithms
     """
     results = {
-        'apriori': {'minsup': [], 'time': [], 'itemsets_count': []},
-        'fpgrowth': {'minsup': [], 'time': [], 'itemsets_count': []},
-        'weighted': {'minsup': [], 'time': [], 'itemsets_count': []}
+        'apriori': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []},
+        'fpgrowth': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []},
+        'weighted': {'minsup': [], 'time': [], 'itemsets_count': [], 'itemset_sizes': []}
     }
     
     print(f"\n{'='*80}")
@@ -78,9 +78,16 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
         frequent_itemsets, exec_time = context.execute_mining(df_encoded, minsup)
         itemsets_count = len(frequent_itemsets)
         
+        # Calculate itemset size distribution
+        itemset_sizes = {}
+        for _, row in frequent_itemsets.iterrows():
+            size = len(row['itemsets'])
+            itemset_sizes[size] = itemset_sizes.get(size, 0) + 1
+        
         results['apriori']['minsup'].append(minsup)
         results['apriori']['time'].append(exec_time)
         results['apriori']['itemsets_count'].append(itemsets_count)
+        results['apriori']['itemset_sizes'].append(itemset_sizes)
         
         print(f"  minsup={minsup:.3f}: {exec_time:.4f}s, {itemsets_count} itemsets")
     
@@ -91,9 +98,16 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
         frequent_itemsets, exec_time = context.execute_mining(transactions_list, minsup)
         itemsets_count = len(frequent_itemsets)
         
+        # Calculate itemset size distribution
+        itemset_sizes = {}
+        for itemset, _ in frequent_itemsets:
+            size = len(itemset)
+            itemset_sizes[size] = itemset_sizes.get(size, 0) + 1
+        
         results['fpgrowth']['minsup'].append(minsup)
         results['fpgrowth']['time'].append(exec_time)
         results['fpgrowth']['itemsets_count'].append(itemsets_count)
+        results['fpgrowth']['itemset_sizes'].append(itemset_sizes)
         
         print(f"  minsup={minsup:.3f}: {exec_time:.4f}s, {itemsets_count} itemsets")
     
@@ -104,9 +118,16 @@ def run_algorithm_comparison(df_encoded: pd.DataFrame,
         frequent_itemsets, exec_time = context.execute_mining(transactions_list, minsup)
         itemsets_count = len(frequent_itemsets)
         
+        # Calculate itemset size distribution
+        itemset_sizes = {}
+        for itemset, _ in frequent_itemsets:
+            size = len(itemset)
+            itemset_sizes[size] = itemset_sizes.get(size, 0) + 1
+        
         results['weighted']['minsup'].append(minsup)
         results['weighted']['time'].append(exec_time)
         results['weighted']['itemsets_count'].append(itemsets_count)
+        results['weighted']['itemset_sizes'].append(itemset_sizes)
         
         print(f"  minsup={minsup:.3f}: {exec_time:.4f}s, {itemsets_count} itemsets")
     
