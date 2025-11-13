@@ -79,6 +79,19 @@ target/
 
 # exclude data from source control by default
 /data/
+# but keep example/placeholder files
+!/data/*/.gitkeep
+
+# Model outputs and results
+/models/*.csv
+/models/*.json
+!/models/mining_strategies.py
+!/models/compare_algorithms.py
+
+# Generated figures
+/reports/figures/*.png
+/reports/figures/*.jpg
+/reports/figures/*.svg
 
 # Mac OS-specific storage files
 .DS_Store
