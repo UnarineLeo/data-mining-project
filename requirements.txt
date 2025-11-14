@@ -1,13 +1,25 @@
 # local package
 -e .
 
-# external requirements
-click
-Sphinx
-coverage
-awscli
-flake8
+# CLI and utilities
+click>=8.0.0
 python-dotenv>=0.5.1
 
 # data processing
 pandas>=1.5.0
+
+# association rule mining
+mlxtend>=0.21.0
+pyfpgrowth>=1.0  # Alternative FP-Growth implementation
+
+# visualization
+matplotlib>=3.5.0
+seaborn>=0.12.0
+
+# development and documentation
+Sphinx>=4.0.0
+coverage>=6.0.0
+flake8>=4.0.0
+
+# optional (if using AWS)
+# awscli>=1.25.0

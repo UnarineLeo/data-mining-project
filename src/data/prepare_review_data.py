@@ -25,7 +25,7 @@ def prepare_review_dataset(review_file, business_file, output_file, num_samples=
             except json.JSONDecodeError:
                 continue
     
-    print(f"✓ Loaded {len(business_categories)} businesses with categories.")
+    print(f"☑ Loaded {len(business_categories)} businesses with categories.")
     
     # Process reviews: filter, sample, and merge in one pass
     processed = 0
@@ -79,7 +79,7 @@ def prepare_review_dataset(review_file, business_file, output_file, num_samples=
             except (json.JSONDecodeError, KeyError):
                 continue
     
-    print(f"\n✅ Processing complete!")
+    print(f"\n😎 Processing complete!")
     print(f"   Processed: {processed} reviews")
     print(f"   Skipped (low stars): {skipped_stars}")
     print(f"   Skipped (no category): {skipped_no_category}")
