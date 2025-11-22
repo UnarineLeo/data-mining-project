@@ -109,7 +109,7 @@ _This section provides the necessary information for a user to be able to run th
 
 3. **Install dependencies**:
    ```bash
-   pip install -e .
+   pip install -r requirements.txt
    ```
 
 ### Data Setup
